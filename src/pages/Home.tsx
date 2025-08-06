@@ -96,6 +96,14 @@ const Home = () => {
 
       if (error) throw error;
 
+      // Send feedback to ML service for reinforcement learning
+      try {
+        const { mlService } = await import('@/services/mlService');
+        await mlService.sendFeedback(contentId, user.id, voteType);
+      } catch (mlError) {
+        console.log('ML service feedback failed (non-critical):', mlError);
+      }
+
       toast({
         title: "Vote recorded!",
         description: "Thank you for helping build better AI.",
