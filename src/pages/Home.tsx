@@ -135,13 +135,13 @@ const Home = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="border-b bg-white/80 backdrop-blur-sm sticky top-0 z-40">
-        <div className="container mx-auto px-4 py-4">
+      <header className="border-b bg-card/80 backdrop-blur-sm sticky top-0 z-40">
+        <div className="container mx-auto px-4 py-3 md:py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-6">
-              <h1 className="text-2xl font-bold gradient-text">HumCon</h1>
+            <div className="flex items-center gap-4 md:gap-6">
+              <h1 className="text-xl md:text-2xl font-bold gradient-text">HumCon</h1>
               
-              <div className="hidden md:flex items-center gap-4">
+              <div className="hidden lg:flex items-center gap-4">
                 <Button
                   variant={filter === 'all' ? 'default' : 'ghost'}
                   size="sm"
@@ -168,12 +168,12 @@ const Home = () => {
               </div>
             </div>
 
-            <div className="flex items-center gap-4">
-              <div className="relative">
+            <div className="flex items-center gap-2 md:gap-4">
+              <div className="relative hidden md:block">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
                   placeholder="Search content..."
-                  className="pl-10 w-64"
+                  className="pl-10 w-48 lg:w-64"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
@@ -181,11 +181,21 @@ const Home = () => {
 
               <Button
                 onClick={() => navigate('/create')}
-                className="flex items-center gap-2"
+                className="hidden sm:flex items-center gap-2"
                 variant="gradient"
+                size="sm"
               >
                 <Plus className="h-4 w-4" />
-                Create
+                <span className="hidden md:inline">Create</span>
+              </Button>
+              
+              <Button
+                onClick={() => navigate('/create')}
+                className="sm:hidden"
+                variant="gradient"
+                size="icon"
+              >
+                <Plus className="h-4 w-4" />
               </Button>
 
               <DropdownMenu>
@@ -212,8 +222,21 @@ const Home = () => {
             </div>
           </div>
 
-          {/* Mobile filters */}
-          <div className="md:hidden flex items-center gap-2 mt-4">
+          {/* Mobile search */}
+          <div className="md:hidden mt-3">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Search content..."
+                className="pl-10"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
+          </div>
+
+          {/* Mobile/Tablet filters */}
+          <div className="lg:hidden flex items-center gap-2 mt-3">
             <Button
               variant={filter === 'all' ? 'default' : 'outline'}
               size="sm"
@@ -225,8 +248,10 @@ const Home = () => {
               variant={filter === 'trending' ? 'default' : 'outline'}
               size="sm"
               onClick={() => setFilter('trending')}
+              className="flex items-center gap-2"
             >
-              Trending
+              <TrendingUp className="h-4 w-4" />
+              <span className="hidden sm:inline">Trending</span>
             </Button>
             <Button
               variant={filter === 'recent' ? 'default' : 'outline'}
