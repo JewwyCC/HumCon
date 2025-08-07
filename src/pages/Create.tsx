@@ -88,7 +88,7 @@ const Create = () => {
         }
       }
 
-      const { error } = await supabase
+      const { error } = await (supabase as any)
         .from('content')
         .insert({
           creator_id: user.id,

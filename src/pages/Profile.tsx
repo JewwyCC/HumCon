@@ -65,7 +65,7 @@ const Profile = () => {
     if (!user) return;
 
     try {
-      const { data, error } = await supabase
+      const { data, error } = await (supabase as any)
         .from('profiles')
         .select('*')
         .eq('user_id', user.id)
@@ -75,8 +75,8 @@ const Profile = () => {
       
       setProfile(data);
       setEditForm({
-        display_name: data.display_name || '',
-        bio: data.bio || '',
+        display_name: data?.display_name || '',
+        bio: data?.bio || '',
       });
     } catch (error) {
       console.error('Error fetching profile:', error);
@@ -87,11 +87,11 @@ const Profile = () => {
     if (!user) return;
 
     try {
-      const { data, error } = await supabase
+      const { data, error } = await (supabase as any)
         .from('content')
         .select(`
           *,
-          profiles (username, avatar_url)
+          profiles!content_creator_id_fkey (username, avatar_url)
         `)
         .eq('creator_id', user.id)
         .order('created_at', { ascending: false });
@@ -108,7 +108,7 @@ const Profile = () => {
 
     try {
       // Get content stats
-      const { data: contentData, error: contentError } = await supabase
+      const { data: contentData, error: contentError } = await (supabase as any)
         .from('content')
         .select('id, authentic_votes_count, inauthentic_votes_count, total_earnings')
         .eq('creator_id', user.id);
@@ -116,7 +116,7 @@ const Profile = () => {
       if (contentError) throw contentError;
 
       // Get voting stats
-      const { data: votesData, error: votesError } = await supabase
+      const { data: votesData, error: votesError } = await (supabase as any)
         .from('votes')
         .select('vote_type')
         .eq('user_id', user.id);
@@ -124,10 +124,10 @@ const Profile = () => {
       if (votesError) throw votesError;
 
       const totalContent = contentData?.length || 0;
-      const totalEarnings = contentData?.reduce((sum, item) => sum + item.total_earnings, 0) || 0;
+      const totalEarnings = contentData?.reduce((sum: number, item: any) => sum + (item.total_earnings || 0), 0) || 0;
       const totalVotes = votesData?.length || 0;
-      const authenticVotes = votesData?.filter(vote => vote.vote_type === 'authentic_like').length || 0;
-      const inauthenticVotes = votesData?.filter(vote => vote.vote_type === 'inauthentic_dislike').length || 0;
+      const authenticVotes = votesData?.filter((vote: any) => vote.vote_type === 'authentic_like').length || 0;
+      const inauthenticVotes = votesData?.filter((vote: any) => vote.vote_type === 'inauthentic_dislike').length || 0;
 
       setUserStats({
         totalContent,
@@ -147,7 +147,7 @@ const Profile = () => {
     if (!user || !profile) return;
 
     try {
-      const { error } = await supabase
+      const { error } = await (supabase as any)
         .from('profiles')
         .update({
           display_name: editForm.display_name,

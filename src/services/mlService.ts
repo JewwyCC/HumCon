@@ -220,7 +220,7 @@ class MLService {
   async autoAnalyzeContent(contentId: string): Promise<void> {
     try {
       // Get content details from Supabase
-      const { data: content, error } = await supabase
+      const { data: content, error } = await (supabase as any)
         .from('content')
         .select('*')
         .eq('id', contentId)
@@ -232,15 +232,15 @@ class MLService {
       }
 
       // Skip if already analyzed
-      if (content.ai_confidence_score && content.ai_confidence_score > 0) {
+      if (content?.ai_confidence_score && content.ai_confidence_score > 0) {
         return;
       }
 
       // Predict authenticity
       const prediction = await this.predictAuthenticity({
         content_id: contentId,
-        content_url: content.file_url || content.thumbnail_url || '',
-        content_type: content.content_type,
+        content_url: content?.file_url || content?.thumbnail_url || '',
+        content_type: content?.content_type,
       });
 
       if (prediction) {
@@ -260,7 +260,7 @@ class MLService {
   async analyzeUnanalyzedContent(): Promise<void> {
     try {
       // Get content without AI analysis
-      const { data: unanalyzedContent, error } = await supabase
+      const { data: unanalyzedContent, error } = await (supabase as any)
         .from('content')
         .select('*')
         .is('ai_confidence_score', null)
@@ -273,8 +273,8 @@ class MLService {
 
       // Prepare batch prediction requests
       const requests: PredictionRequest[] = unanalyzedContent
-        .filter(content => content.file_url || content.thumbnail_url)
-        .map(content => ({
+        .filter((content: any) => content.file_url || content.thumbnail_url)
+        .map((content: any) => ({
           content_id: content.id,
           content_url: content.file_url || content.thumbnail_url || '',
           content_type: content.content_type,

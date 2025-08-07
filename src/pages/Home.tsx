@@ -23,10 +23,10 @@ interface Content {
   inauthentic_votes_count: number;
   total_earnings: number;
   created_at: string;
-  profiles: {
+  profiles?: {
     username: string;
     avatar_url?: string;
-  };
+  } | null;
 }
 
 const Home = () => {
@@ -52,7 +52,7 @@ const Home = () => {
         .from('content')
         .select(`
           *,
-          profiles (username, avatar_url)
+          profiles!content_creator_id_fkey (username, avatar_url)
         `)
         .eq('is_active', true);
 
@@ -67,7 +67,7 @@ const Home = () => {
       const { data, error } = await query.limit(20);
       
       if (error) throw error;
-      setContent(data || []);
+      setContent((data as unknown as Content[]) || []);
     } catch (error) {
       console.error('Error fetching content:', error);
       toast({
