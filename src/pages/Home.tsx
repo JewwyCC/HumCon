@@ -48,12 +48,9 @@ const Home = () => {
 
   const fetchContent = async () => {
     try {
-      let query = supabase
+      let query = (supabase as any)
         .from('content')
-        .select(`
-          *,
-          profiles!content_creator_id_fkey (username, avatar_url)
-        `)
+        .select('*')
         .eq('is_active', true);
 
       if (filter === 'trending') {
@@ -84,7 +81,7 @@ const Home = () => {
     if (!user) return;
 
     try {
-      const { error } = await supabase
+      const { error } = await (supabase as any)
         .from('votes')
         .upsert({
           user_id: user.id,
